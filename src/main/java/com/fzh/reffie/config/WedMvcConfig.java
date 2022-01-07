@@ -19,4 +19,6 @@ public class WedMvcConfig extends WebMvcConfigurationSupport {
         registry.addResourceHandler("/backend/**").addResourceLocations("classpath:/backend/");
         registry.addResourceHandler("/front/**").addResourceLocations("classpath:/front/");
     }
+
+
 }
