@@ -2,6 +2,7 @@ package com.fzh.reffie.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -14,6 +15,8 @@ public class Employee implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+//    解决java对象自动转成string格式给前端的方法  完全可以代替common包里的JacksonObjectMapper类
+//    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
 
     private String username;
