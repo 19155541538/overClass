@@ -1,23 +1,24 @@
 package com.fzh.reffie.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fzh.reffie.common.R;
 import com.fzh.reffie.entity.Employee;
 import com.fzh.reffie.service.EmployeeService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 
 //Slf4j添加打印日志的注解
 @Slf4j
 @RestController
 @RequestMapping("/employee")
+
 public class EmployeeController {
 
     @Autowired
@@ -25,6 +26,7 @@ public class EmployeeController {
 
     /**
      * 员工登录
+     *
      * @param request
      * @param employee
      * @return
@@ -59,7 +61,7 @@ public class EmployeeController {
 //        获取session对象,然后把要绑定对象/值 绑定到session对象上 用户的一次会话共享一个session对象。
         request.getSession().setAttribute("employee", emp.getId());
         //上面的employee把用户写死了 用户退出都退出了  emp.getId().toString()动态的获取ID
-//        request.getSession().setAttribute(emp.getId().toString(), emp.getId());
+        //request.getSession().setAttribute(emp.getId().toString(), emp.getId());
         emp.setPassword("");//不让前端看到密码
 
         return R.success(emp);//emp 从数据库查出来的用户信息
@@ -76,5 +78,100 @@ public class EmployeeController {
         //清理Session中保存的当前登录员工的ID
         request.getSession().removeAttribute("employee");
         return R.success("退出成功");
+    }
+
+    /**
+     * 添加方法
+     * @param request
+     * @param employee
+     * @return
+     */
+    @PostMapping
+    public R<String> save(HttpServletRequest request, @RequestBody Employee employee) {
+        log.info("新增员工,员工信息:{}", employee.toString());
+        //设置初始密码并进行加密
+        employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
+
+        //获取用户创建时间和用户修改时间
+        employee.setCreateTime(LocalDateTime.now());
+        employee.setUpdateTime(LocalDateTime.now());
+
+        //获取当前用户ID
+        Long empId = (Long) request.getSession().getAttribute("employee");
+
+        //通过ID获取当前创建人 和 修改人
+        employee.setCreateUser(empId);
+        employee.setUpdateUser(empId);
+
+        employeeService.save(employee);
+        return R.success("新增员工成功");
+    }
+
+    /**
+     * @param page
+     * @param pageSize
+     * @param name
+     * @return
+     */
+    @GetMapping("/page")
+    public R<Page> findBypage(int page, int pageSize, String name) {
+
+        log.info("page = {},pageSize = {},name = {}", page, pageSize, name);
+        /*if(page == null){
+            page=1;
+        }
+        if(pageSize == null){
+            pageSize=10;
+        }*/
+
+        //构造分页构造器
+        Page pageInfo = new Page(page, pageSize);
+
+        //构造条件构造器
+        LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper();
+        //添加过滤条件  StringUtils.isNotEmpty(name)判断姓名是否为空
+        queryWrapper.like(StringUtils.isNotEmpty(name), Employee::getName, name);
+        //添加排序条件  orderByDesc
+        queryWrapper.orderByDesc(Employee::getUpdateTime);
+
+        //执行查询
+        employeeService.page(pageInfo, queryWrapper);
+        return R.success(pageInfo);
+    }
+
+    /**
+     * 根据ID修改员工信息
+     *
+     * @param request
+     * @param employee
+     * @return
+     */
+    @PutMapping
+    public R<String> update(HttpServletRequest request, @RequestBody Employee employee) {
+        log.info(employee.toString());
+
+        //获取员工id
+        Long empId = (Long) request.getSession().getAttribute("employee");
+
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(empId);
+        employeeService.updateById(employee);
+
+        return R.success("员工信息修改成功");
+    }
+
+    /**
+     * 根据Id查数据
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    public R<Employee> findById(@PathVariable("id") Long id) {
+        log.info("根据id查询员工信息");
+        Employee byId = employeeService.getById(id);
+        if (byId != null) {
+            return R.success(byId);
+        }
+        return R.error("我们这可没有你说的这个人!");
     }
 }
