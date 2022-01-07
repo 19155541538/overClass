@@ -166,12 +166,12 @@ public class EmployeeController {
      * @return
      */
     @GetMapping("/{id}")
-    public R<Employee> findById(@PathVariable("id") Long id) {
-        log.info("根据id查询员工信息");
-        Employee byId = employeeService.getById(id);
-        if (byId != null) {
-            return R.success(byId);
+    public R<Employee> getById(@PathVariable Long id){
+        log.info("根据id查询员工信息...");
+        Employee employee = employeeService.getById(id);
+        if(employee != null){
+            return R.success(employee);
         }
-        return R.error("我们这可没有你说的这个人!");
+        return R.error("没有查询到对应员工信息");
     }
 }
