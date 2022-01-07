@@ -26,7 +26,6 @@ public class EmployeeController {
 
     /**
      * 员工登录
-     *
      * @param request
      * @param employee
      * @return
@@ -69,7 +68,6 @@ public class EmployeeController {
 
     /**
      * 员工退出
-     *
      * @param request
      * @return
      */
@@ -92,7 +90,7 @@ public class EmployeeController {
         //设置初始密码并进行加密
         employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
 
-        //获取用户创建时间和用户修改时间
+       /* //获取用户创建时间和用户修改时间
         employee.setCreateTime(LocalDateTime.now());
         employee.setUpdateTime(LocalDateTime.now());
 
@@ -101,13 +99,14 @@ public class EmployeeController {
 
         //通过ID获取当前创建人 和 修改人
         employee.setCreateUser(empId);
-        employee.setUpdateUser(empId);
+        employee.setUpdateUser(empId);*/
 
         employeeService.save(employee);
         return R.success("新增员工成功");
     }
 
     /**
+     * 分页查询
      * @param page
      * @param pageSize
      * @param name
@@ -141,7 +140,6 @@ public class EmployeeController {
 
     /**
      * 根据ID修改员工信息
-     *
      * @param request
      * @param employee
      * @return
@@ -150,11 +148,13 @@ public class EmployeeController {
     public R<String> update(HttpServletRequest request, @RequestBody Employee employee) {
         log.info(employee.toString());
 
-        //获取员工id
+       /* //获取员工id
         Long empId = (Long) request.getSession().getAttribute("employee");
-
         employee.setUpdateTime(LocalDateTime.now());
-        employee.setUpdateUser(empId);
+        employee.setUpdateUser(empId);*/
+        long id = Thread.currentThread().getId();
+        log.info("线程id:{}",id);
+
         employeeService.updateById(employee);
 
         return R.success("员工信息修改成功");

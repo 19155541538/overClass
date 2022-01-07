@@ -16,7 +16,7 @@ public class Employee implements Serializable {
     private static final long serialVersionUID = 1L;
 
 //    解决java对象自动转成string格式给前端的方法  完全可以代替common包里的JacksonObjectMapper类
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
+//    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
 
     private String username;
@@ -33,10 +33,10 @@ public class Employee implements Serializable {
 
     private Integer status;
 
-//    @TableField(fill = FieldFill.INSERT)//插入时填充字段
+    @TableField(fill = FieldFill.INSERT)//插入时填充字段
     private LocalDateTime createTime;
 
-//    @TableField(fill=FieldFill.INSERT_UPDATE)//插入和更新时填充字段
+    @TableField(fill=FieldFill.INSERT_UPDATE)//插入和更新时填充字段
     private LocalDateTime updateTime;
 
     @TableField(fill = FieldFill.INSERT)//插入时填充字段
