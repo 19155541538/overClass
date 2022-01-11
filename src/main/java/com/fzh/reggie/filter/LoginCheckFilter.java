@@ -40,7 +40,8 @@ public class LoginCheckFilter implements Filter {
                 "/employee/login",
                 "/employee.logout",
                 "/backend/**",
-                "/front/**"
+                "/front/**",
+                "/common/**"
         };
 //        B. 判断本次请求, 是否需要登录, 才可以访问  调用自定义判断 前端请求路径和后端允许放行的代码是否一致
         boolean check = check(urls, requestURI);

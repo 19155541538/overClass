@@ -20,3 +20,6 @@ mybatis-plus:
     db-config:
       #      主键生成策略 雪花算法
       id-type: ASSIGN_ID
+
+reggie:
+    path: D:\img\
