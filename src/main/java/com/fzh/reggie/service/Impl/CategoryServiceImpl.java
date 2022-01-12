@@ -31,6 +31,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
 
     /**
      * 根据ID删除分类,,删除之前需要进行判断
+     *
      * @param id
      */
     @Override
@@ -42,18 +43,18 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         int count1 = dishService.count(dishLambdaQueryWrapper);
 
         //如果已经关联,抛出一个业务异常
-        if(count1>0){
-            throw  new CustomException("当前分类下关联了菜品,不能删除");//已经关联菜品,抛出一个业务异常
+        if (count1 > 0) {
+            throw new CustomException("当前分类下关联了菜品,不能删除");//已经关联菜品,抛出一个业务异常
         }
 
         //查询当前分类是否关联了套餐,如果已经关联,抛出一个业务异常
         LambdaQueryWrapper<Setmeal> setmealLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        setmealLambdaQueryWrapper.eq(Setmeal::getCategoryId,id);
+        setmealLambdaQueryWrapper.eq(Setmeal::getCategoryId, id);
         int count2 = setmealService.count(setmealLambdaQueryWrapper);
-        if(count2 > 0 ){
-            throw  new CustomException("当前分类下关联了套餐,不能删除");//已经关联套餐,抛出异常
+        if (count2 > 0) {
+            throw new CustomException("当前分类下关联了套餐,不能删除");//已经关联套餐,抛出异常
         }
-        //没有抛出异常怎么删除
+        //没有抛出异常正常删除
         super.removeById(id);
     }
 }

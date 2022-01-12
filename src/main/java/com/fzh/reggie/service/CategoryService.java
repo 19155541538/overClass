@@ -7,9 +7,9 @@ import com.fzh.reggie.entity.Category;
  * @author 房忠瀚
  * @version 1
  * @date 2022/1/7 23:00
- * @description 业务层接口
+ * @description 分类 业务层接口
  */
 public interface CategoryService extends IService<Category> {
-    //删除ID分类
+    //自定义的 删除ID分类
     public void remove (Long id);
 }

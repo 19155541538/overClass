@@ -75,6 +75,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
 
         //查询当前菜品对应的口味信息,从dish_flavor表查询
         LambdaQueryWrapper<DishFlavor> queryWrapper = new LambdaQueryWrapper<>();
+        //查看菜品ID和当前ID是否一样
         queryWrapper.eq(DishFlavor::getDishId, dish.getId());
         List<DishFlavor> flavors = dishFlavorService.list(queryWrapper);
         dishDto.setFlavors(flavors);
@@ -84,7 +85,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
 
 
     @Override
-    @Transactional
+    @Transactional//事务注解保证数据一致性
     public void updateWithFlavor(DishDto dishDto) {
         //更新dish表基本信息
         this.updateById(dishDto);

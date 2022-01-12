@@ -14,6 +14,8 @@ import java.sql.SQLIntegrityConstraintViolationException;
  * @date 2022/1/7 14:39
  * @description 全局异常处理
  */
+
+
 //指定拦截那些类型的控制器; ControllerAdvice  RestController意思是拦截类上加了RestController的类
 @ControllerAdvice(annotations = {RestController.class, Controller.class})
 @Slf4j

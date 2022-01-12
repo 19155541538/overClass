@@ -73,6 +73,7 @@ public class CategoryController {
         log.info("删除分类,id为{}", id);
 
 //      categoryService.removeById(id);
+        //因为需要判断当前菜品是否关联了套餐  所以要使用自定义的删除方法(在自定义删除的方法中判断了当前菜品是否可以删除)
         categoryService.remove(id);
         return R.success("分类信息删除成功!");
     }

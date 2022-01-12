@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- 菜品
+ 菜品实体类
  */
 @Data
 public class Dish implements Serializable {

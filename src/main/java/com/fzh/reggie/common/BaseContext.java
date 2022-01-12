@@ -10,11 +10,21 @@ package com.fzh.reggie.common;
 public class BaseContext {
     private static ThreadLocal<Long> threadLocal = new ThreadLocal<Long>();
 
-    public static  void  setCurrentId(long  id){
+    /**
+     * 设置值
+     *
+     * @param id
+     */
+    public static void setCurrentId(long id) {
         threadLocal.set(id);
     }
 
-    public static Long getCurrentId(){
+    /**
+     * 获取值
+     *
+     * @return
+     */
+    public static Long getCurrentId() {
         return threadLocal.get();
     }
 }

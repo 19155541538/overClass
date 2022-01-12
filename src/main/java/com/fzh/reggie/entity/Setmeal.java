@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * 套餐
+ * 套餐实体类
  */
 @Data
 public class Setmeal implements Serializable {
