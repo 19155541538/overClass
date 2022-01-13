@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 分类管理
+ * 分类 管理
  */
 @RestController
 @RequestMapping("/category")

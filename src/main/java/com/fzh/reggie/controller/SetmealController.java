@@ -101,6 +101,7 @@ public class SetmealController {
         for (Setmeal record : records) {
             SetmealDto setmealDto = new SetmealDto();
 
+            //拷贝的两个参数要类型相同,字段名相同,变量名形同  不然考不过去,,,还不报错
             BeanUtils.copyProperties(record, setmealDto);
 
             //获取分类id

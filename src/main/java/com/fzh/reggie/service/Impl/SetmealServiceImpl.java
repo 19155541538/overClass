@@ -44,6 +44,7 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
             return item;
         }).collect(Collectors.toList());
 
+
        /* List<SetmealDish> setmealDishes1 = new ArrayList<>();
         for (SetmealDish setmealDish : setmealDishes) {
             setmealDish.setSetmealId(setmealDto.getId());
@@ -60,7 +61,7 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
     @Override
     @Transactional //因为操作2张表 为了确保数据的一致性 加入事务注解 同时成功,同时失败
     public void removeWithDish(List<Long> ids) {
-        //查询一下确定一个是否可以删
+        //查询一下确定一个是否可以删   LambdaQueryWrapper-->查询条件对象
         LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.in(Setmeal::getId, ids);
         queryWrapper.eq(Setmeal::getStatus, 1);
@@ -75,11 +76,11 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         //如果可以删除,先删除套餐表中的数据 ----setmeal
         this.removeByIds(ids);
 
+        //再删除SetmealDish 表
         LambdaQueryWrapper<SetmealDish> setmealDishLambdaQueryWrapper = new LambdaQueryWrapper<>();
         setmealDishLambdaQueryWrapper.in(SetmealDish::getSetmealId, ids);
 
-        //删除关系表中的数据 ===setmeal_dish
+        //执行删除关系表中的数据 ===setmeal_dish
         setmealDishService.remove(setmealDishLambdaQueryWrapper);
     }
-
 }

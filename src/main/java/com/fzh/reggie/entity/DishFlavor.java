@@ -12,10 +12,10 @@ import java.time.LocalDateTime;
 @Data
 public class DishFlavor implements Serializable {
 
+    //序列化ID
     private static final long serialVersionUID = 1L;
 
     private Long id;
-
 
     //菜品id
     private Long dishId;

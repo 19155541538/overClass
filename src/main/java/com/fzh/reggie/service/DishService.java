@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.fzh.reggie.dto.DishDto;
 import com.fzh.reggie.entity.Dish;
 
+import java.util.List;
+
 /**
  * @author 房忠瀚
  * @version 1
@@ -18,4 +20,7 @@ public interface DishService extends IService<Dish> {
 
     //更新菜品信息，同时更新对应的口味信息
     public void updateWithFlavor(DishDto dishDto);
+
+    //删除
+    public void reomveWithFlavor(List<Long> ids);
 }

@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Slf4j
 @SpringBootApplication
-@ServletComponentScan
+@ServletComponentScan//把过滤器扫描进来
 @EnableTransactionManagement //开启对事物管理的支持
 public class ReggieAppcation {
     public static void main(String[] args) {

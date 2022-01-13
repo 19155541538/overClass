@@ -155,4 +155,17 @@ public class DishController {
         List<Dish> list = dishService.list(dishLambdaQueryWrapper);
         return R.success(list);
     }
+
+    /**
+     * 删除
+     * @param ids
+     * @return
+     */
+    @DeleteMapping
+    public R<String> delete(@RequestParam List<Long> ids){
+        log.info("删除{}",ids);
+        //执行自定义删除命令
+        dishService.reomveWithFlavor(ids);
+        return R.success("删除成功");
+    }
 }

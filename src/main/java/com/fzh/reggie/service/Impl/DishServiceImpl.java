@@ -2,10 +2,13 @@ package com.fzh.reggie.service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fzh.reggie.common.CustomException;
 import com.fzh.reggie.dto.DishDto;
+import com.fzh.reggie.entity.Category;
 import com.fzh.reggie.entity.Dish;
 import com.fzh.reggie.entity.DishFlavor;
 import com.fzh.reggie.mapper.DishMapper;
+import com.fzh.reggie.service.CategoryService;
 import com.fzh.reggie.service.DishFlavorService;
 import com.fzh.reggie.service.DishService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +32,9 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
 
     @Autowired
     private DishFlavorService dishFlavorService;
+
+    @Autowired
+    private CategoryService categoryService;
 
     /**
      * 新增菜品，同时保存对应的口味数据
@@ -85,6 +91,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
 
     /**
      * 修改
+     *
      * @param dishDto
      */
     @Override
@@ -108,5 +115,33 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
         }).collect((Collectors.toList()));
 
         dishFlavorService.saveBatch(flavors);
+    }
+
+
+    /**
+     * 删除
+     *
+     * @param ids
+     */
+    @Override
+    @Transactional
+    public void reomveWithFlavor(List<Long> ids) {
+        LambdaQueryWrapper<Dish> dishLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        dishLambdaQueryWrapper.in(Dish::getId, ids)
+                .eq(Dish::getStatus, 1);
+
+        int count = this.count(dishLambdaQueryWrapper);
+        if (count > 0) {
+            throw new CustomException("当前菜品在售中,,,不能删除");
+        }
+
+        //使用本地删除方法, 删除菜品
+        this.removeByIds(ids);
+
+        LambdaQueryWrapper<DishFlavor> categoryLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        //根据 菜名表Dish 的 id 删除 口味表DishFlavor
+        categoryLambdaQueryWrapper.in(DishFlavor::getDishId, ids);
+
+        dishFlavorService.remove(categoryLambdaQueryWrapper);
     }
 }
