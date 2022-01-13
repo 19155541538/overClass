@@ -59,9 +59,8 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
         dishFlavorService.saveBatch(flavors);
     }
 
-
     /**
-     * 根据id查
+     * 根据id查  用于回显数据
      *
      * @param id
      * @return
@@ -84,6 +83,10 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
     }
 
 
+    /**
+     * 修改
+     * @param dishDto
+     */
     @Override
     @Transactional//事务注解保证数据一致性
     public void updateWithFlavor(DishDto dishDto) {

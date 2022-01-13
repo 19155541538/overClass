@@ -74,7 +74,7 @@ public class DishController {
         //对象拷贝  从pageInfo拷贝到dishDtoPage 排除records,
         BeanUtils.copyProperties(pageInfo, dishDtoPage, "records");
 
-        //在把records集合处理一下
+        //获取 records  在把records集合处理一下
         List<Dish> records = pageInfo.getRecords();
         //遍历records
 /*        List<DishDto> list = records.stream().map((item) -> {
@@ -117,8 +117,7 @@ public class DishController {
     }
 
     /**
-     * 根据id查询菜品信息和对应的口味信息
-     *
+     * 根据id查询菜品信息和对应的口味信息  -->回显
      * @param id
      * @return
      */
@@ -128,10 +127,32 @@ public class DishController {
         return R.success(dishDto);
     }
 
+    /**
+     * 修改
+     * @param dishDto
+     * @return
+     */
     @PutMapping
     public R<String> update(@RequestBody DishDto dishDto) {
         log.info(dishDto.toString());
         dishService.updateWithFlavor(dishDto);
         return R.success("修改菜品成功");
+    }
+
+    /**
+     * 根据条件查询对应的菜品数据
+     *
+     * @param dish
+     * @return
+     */
+    @GetMapping("/list")
+    public R<List<Dish>> list(Dish dish) {
+        //构建查询条件
+        LambdaQueryWrapper<Dish> dishLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        dishLambdaQueryWrapper.eq(dish.getCategoryId() != null, Dish::getCategoryId, dish.getCategoryId())
+                .eq(Dish::getStatus, 1)
+                .orderByAsc(Dish::getSort).orderByDesc(Dish::getCreateTime);
+        List<Dish> list = dishService.list(dishLambdaQueryWrapper);
+        return R.success(list);
     }
 }
