@@ -57,7 +57,6 @@ public class UserController {
         return R.error("短信发送失败");
     }
 
-
     /**
      * 移动端用户登录
      * @param map
@@ -77,7 +76,6 @@ public class UserController {
         //进行验证码的比对（页面提交的验证码和Session中保存的验证码比对）
         if(codeInSession != null && codeInSession.equals(code)){
             //如果能够比对成功，说明登录成功
-
             LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(User::getPhone,phone);
 

@@ -133,4 +133,22 @@ public class SetmealController {
         setmealService.removeWithDish(ids);
         return R.success("套餐数据删除成功");
     }
+
+    /**
+     * 根据条件查询套餐数据
+     * @param setmeal
+     * @return
+     */
+    @GetMapping("/list")
+    public R<List<Setmeal>> list (Setmeal setmeal){
+        LambdaQueryWrapper<Setmeal> setmealLambdaQueryWrapper = new LambdaQueryWrapper<>();
+
+        //查询条件  根据分类ID 比对一下 当前分类 是什么套餐 或者 什么菜品
+        setmealLambdaQueryWrapper.eq(setmeal.getCategoryId()!=null,Setmeal::getCategoryId,setmeal.getCategoryId())
+                .eq(setmeal.getStatus()!=null ,Setmeal::getStatus, setmeal.getStatus())
+                .orderByDesc(Setmeal::getUpdateTime);
+
+        List<Setmeal> list = setmealService.list(setmealLambdaQueryWrapper);
+        return R.success(list);
+    }
 }

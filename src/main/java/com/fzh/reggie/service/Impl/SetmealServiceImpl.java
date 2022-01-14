@@ -31,6 +31,10 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
     @Autowired
     private SetmealDishService setmealDishService;
 
+    /**
+     * 添加
+     * @param setmealDto
+     */
     @Override
     @Transactional //因为要操作2张表所以要加 , 保证事务的一致性 要么全成功要么全失败
     public void saveWithDish(SetmealDto setmealDto) {
@@ -57,7 +61,10 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         setmealDishService.saveBatch(setmealDishes);
     }
 
-
+    /**
+     * 自定义删除
+     * @param ids
+     */
     @Override
     @Transactional //因为操作2张表 为了确保数据的一致性 加入事务注解 同时成功,同时失败
     public void removeWithDish(List<Long> ids) {
