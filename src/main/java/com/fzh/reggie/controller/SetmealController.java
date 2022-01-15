@@ -6,12 +6,14 @@ import com.fzh.reggie.common.R;
 import com.fzh.reggie.dto.SetmealDto;
 import com.fzh.reggie.entity.Category;
 import com.fzh.reggie.entity.Setmeal;
+import com.fzh.reggie.entity.SetmealDish;
 import com.fzh.reggie.service.CategoryService;
 import com.fzh.reggie.service.SetmealDishService;
 import com.fzh.reggie.service.SetmealService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -150,5 +152,66 @@ public class SetmealController {
 
         List<Setmeal> list = setmealService.list(setmealLambdaQueryWrapper);
         return R.success(list);
+    }
+
+    /**
+     * 修改状态
+     * @param status
+     * @param ids
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    public  R<String> updateStatus (@PathVariable int status , Long[] ids){
+        Setmeal setmeal = new Setmeal();
+        setmeal.setStatus(status);
+
+        for (Long id : ids) {
+            LambdaQueryWrapper<Setmeal> setmealLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            setmealLambdaQueryWrapper.eq(Setmeal::getId, id);
+            // 根据 setmealLambdaQueryWrapper 条件，更新记录
+            setmealService.update(setmeal,setmealLambdaQueryWrapper);
+        }
+
+        return R.success("状态修改成功");
+    }
+
+
+    /**
+     * 根据id查询数据进行数据回显
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    public R<SetmealDto> getById(@PathVariable Long id){
+
+        //先查询出套餐基本信息
+        Setmeal setmeal = setmealService.getById(id);
+
+        //再根据id查询出套餐对应的菜品信息
+        LambdaQueryWrapper<SetmealDish> wrapper=new LambdaQueryWrapper<>();
+        wrapper.eq(SetmealDish::getSetmealId,id);
+        List<SetmealDish> dishList = setmealDishService.list(wrapper);
+
+        //创建SetmealDto对象，封装套餐和对饮的菜品信息
+        SetmealDto setmealDto=new SetmealDto();
+        BeanUtils.copyProperties(setmeal,setmealDto);
+        setmealDto.setSetmealDishes(dishList);
+        return R.success(setmealDto);
+    }
+
+
+    /**
+     * 更新套餐信息
+     * @param setmealDto
+     * @return
+     */
+    @PutMapping
+//    @CacheEvict(value = "setmealCache" ,allEntries = true)
+//    @ApiOperation(value = "更新套餐信息")
+    public R<String> update(@RequestBody SetmealDto setmealDto){
+
+        setmealService.updateWithDish(setmealDto);
+
+        return R.success("修改成功");
     }
 }

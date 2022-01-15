@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -42,6 +43,7 @@ public class DishController {
     @Autowired
     private CategoryService categoryService;
 
+
     /**
      * 新增菜品
      *
@@ -51,9 +53,7 @@ public class DishController {
     @PostMapping
     public R<String> save(@RequestBody DishDto dishDto) {
         log.info(dishDto.toString());
-
         dishService.saveWithFlavor(dishDto);
-
         return R.success("新增菜品成功");
     }
 
@@ -210,5 +210,28 @@ public class DishController {
         //执行自定义删除命令
         dishService.reomveWithFlavor(ids);
         return R.success("删除成功");
+    }
+
+    /**
+     * 修改状态
+     * @param status
+     * @param ids
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    public R<String> updateStatus(@PathVariable int status, Long[] ids) {
+
+        //创建Dish对象，将状态值设置进去
+        Dish dish = new Dish();
+        dish.setStatus(status);
+
+        //遍历传来的ids值，添加更新条件
+        for (Long id : ids) {
+            LambdaQueryWrapper<Dish> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(Dish::getId, id);
+            dishService.update(dish, wrapper);
+        }
+
+        return R.success("状态更改成功");
     }
 }
