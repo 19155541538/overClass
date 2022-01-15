@@ -35,7 +35,7 @@
                         <div class="timeStatus">
                             <span>{{order.orderTime}}</span>
                             <span>{{getStatus(order.status)}}</span>
-                            <!-- <span>正在派送呢.....</span> -->
+                            <!-- <span>正在派送</span> -->
                         </div>
                         <div class="dishList">
                             <div v-for="(item,index) in order.orderDetails" :key="index" class="item">
@@ -110,9 +110,7 @@
                     }
                     const res = await orderPagingApi(this.paging)
                     if(res.code === 1){
-                        res.code.records
                         this.orderList.push(...res.data.records)
-                        console.log("-----",this.orderList);
                         let records = res.data.records
                         if(records && Array.isArray(records)){
                             records.forEach(item=>{
@@ -149,7 +147,7 @@
                             str =  '待付款'
                         break;
                         case 2:
-                            str =  '待派送'
+                            str =  '正在派送'
                         break;
                         case 3:
                             str =  '已派送'

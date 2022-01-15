@@ -63,23 +63,16 @@
                     const regex = /^(13[0-9]{9})|(15[0-9]{9})|(17[0-9]{9})|(18[0-9]{9})|(19[0-9]{9})$/;
                     if (regex.test(this.form.phone)) {
                         this.msgFlag = false
-                        //这是前端自己的写的验证码,,没有调用后端的接口
-                        // this.form.code = (Math.random()*1000000).toFixed(0)
-                        //调用后端的接口
+                        //this.form.code = (Math.random()*1000000).toFixed(0)
                         sendMsgApi({phone:this.form.phone})
                     }else{
                         this.msgFlag = true
                     }
                 },
                 async btnLogin(){
-                    const params={
-                        phone:this.form.phone,
-                        code:this.form.code
-                    }
-
                     if(this.form.phone && this.form.code){
                         this.loading = true
-                        const res = await loginApi(params)
+                        const res = await loginApi(this.form)
                         this.loading = false
                         if(res.code === 1){
                             sessionStorage.setItem("userPhone",this.form.phone)

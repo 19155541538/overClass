@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fzh.reggie.common.R;
 import com.fzh.reggie.entity.Orders;
+import com.fzh.reggie.entity.ShoppingCart;
 import com.fzh.reggie.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class OrderController {
     }
 
     /**
-     *订单明细 -->管理端
+     *订单 -->管理端
      * @param page
      * @param pageSize
      * @param number
@@ -73,5 +74,31 @@ public class OrderController {
     public R<String> update(@RequestBody Orders orders){
         orderService.updateById(orders);
         return R.success("修改成功");
+    }
+
+
+    /**
+     * 最新订单
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    @GetMapping("/userPage")
+    public R<Page> newOrders (int page, int pageSize){
+        Page<Orders> pageInfo = new Page<>();
+        LambdaQueryWrapper<Orders> ordersLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        ordersLambdaQueryWrapper.orderByDesc(Orders::getOrderTime);
+        orderService.page(pageInfo,ordersLambdaQueryWrapper);
+        return R.success(pageInfo);
+    }
+
+    /**
+     * 再来一单
+     * @param
+     * @return
+     */
+    @PostMapping("/again")
+    public R<String> again(){
+        return  R.success("返回主页");
     }
 }

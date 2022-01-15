@@ -1,9 +1,12 @@
 package com.fzh.reggie.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fzh.reggie.common.BaseContext;
 import com.fzh.reggie.common.R;
+import com.fzh.reggie.entity.Orders;
 import com.fzh.reggie.entity.ShoppingCart;
+import com.fzh.reggie.service.OrderService;
 import com.fzh.reggie.service.ShoppingCartService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,8 @@ public class ShoppingCartController {
     @Autowired
     private ShoppingCartService shoppingCartService;
 
+    @Autowired
+    private OrderService orderService;
     /**
      * 添加购物车
      *
@@ -74,6 +79,61 @@ public class ShoppingCartController {
         return R.success(cartServiceOne);
     }
 
+
+    /**
+     * 购物车订单 数量减少
+     * 删除
+     *
+     * @param shoppingCart
+     * @return
+     */
+    @PostMapping("/sub")
+    public R<ShoppingCart> cut(@RequestBody ShoppingCart shoppingCart) {
+        //获取用户id
+        Long userId = BaseContext.getCurrentId();
+        //获取前端给的套餐id
+        Long setmealId = shoppingCart.getSetmealId();
+
+        LambdaQueryWrapper<ShoppingCart> shoppingCartLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        shoppingCartLambdaQueryWrapper.eq(ShoppingCart::getUserId, userId);//判断登录用户 id
+
+        if (setmealId == null) {
+            //删除菜品
+            shoppingCartLambdaQueryWrapper.eq(ShoppingCart::getDishId, shoppingCart.getDishId());
+        } else {
+            //删除taoc
+            shoppingCartLambdaQueryWrapper.eq(ShoppingCart::getSetmealId, shoppingCart.getSetmealId());
+        }
+        //查询当前菜品或者套餐是否在购物车中
+        ShoppingCart cartServiceOne = shoppingCartService.getOne(shoppingCartLambdaQueryWrapper);
+        Integer number = cartServiceOne.getNumber(); //获取数量
+
+        /*if(number != null){
+            //如果已经存在就在原来的基础上  减去一
+            Integer number1 = cartServiceOne.getNumber();
+            if(number>1){
+                cartServiceOne.setNumber(number - 1);
+            }else {
+                shoppingCartService.remove(shoppingCartLambdaQueryWrapper);
+            }
+            shoppingCartService.updateById(cartServiceOne);
+        }else {
+            shoppingCartService.updateById(cartServiceOne);
+        }
+        */
+
+        if (number >= 2) {
+            cartServiceOne.setNumber(number - 1);
+            shoppingCartService.updateById(cartServiceOne);
+        } else {
+            Integer number1 = cartServiceOne.getNumber();
+            cartServiceOne.setNumber(number - 1);
+            shoppingCartService.remove(shoppingCartLambdaQueryWrapper);
+        }
+        return R.success(shoppingCart);
+
+    }
+
     /*
      * 查看购物车
      * @return
@@ -87,19 +147,18 @@ public class ShoppingCartController {
 
         //查询所有满足条件的 放进集合中
         List<ShoppingCart> list = shoppingCartService.list(shoppingCartLambdaQueryWrapper);
-
         return R.success(list);
     }
 
     /**
      * 清除购物车
+     *
      * @return
      */
     @DeleteMapping("/clean")
-    public R<String> clean(){
+    public R<String> clean() {
         LambdaQueryWrapper<ShoppingCart> shoppingCartLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        shoppingCartLambdaQueryWrapper.eq(ShoppingCart::getUserId , BaseContext.getCurrentId());
-
+        shoppingCartLambdaQueryWrapper.eq(ShoppingCart::getUserId, BaseContext.getCurrentId());
         shoppingCartService.remove(shoppingCartLambdaQueryWrapper);
 
         return R.success("删除成功");

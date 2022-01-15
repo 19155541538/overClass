@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.fzh.reggie.common.BaseContext;
 import com.fzh.reggie.common.R;
 import com.fzh.reggie.entity.AddressBook;
+import com.fzh.reggie.entity.Orders;
 import com.fzh.reggie.service.AddressBookService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,5 +123,28 @@ public class AddressBookController {
 
         //SQL:select * from address_book where user_id = ? order by update_time desc
         return R.success(addressBookService.list(queryWrapper));
+    }
+
+    /**
+     * 修改用户的地址信息
+     *
+     * @param addressBook
+     * @return
+     */
+    @PutMapping
+    public R<String> update(@RequestBody AddressBook addressBook) {
+        addressBookService.updateById(addressBook);
+        return R.success("修改成功");
+
+    }
+    /**
+     * 删除地址
+     * @param ids
+     * @return
+     */
+    @DeleteMapping
+    public R<String> delAddr( Long ids){
+        addressBookService.removeById(ids);
+        return R.success("删除成功");
     }
 }
