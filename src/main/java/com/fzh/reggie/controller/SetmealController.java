@@ -201,7 +201,7 @@ public class SetmealController {
 
 
     /**
-     * 更新套餐信息
+     * 修改套餐信息
      * @param setmealDto
      * @return
      */

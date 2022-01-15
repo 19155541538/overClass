@@ -13,7 +13,7 @@ import org.springframework.core.annotation.Order;
 public interface OrderService extends IService<Orders> {
     /**
      * 自定义用户下单
-     * @param order
+     * @param orders
      */
     public void submit( Orders orders);
 }

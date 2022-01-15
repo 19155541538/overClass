@@ -228,10 +228,12 @@ public class DishController {
         //遍历传来的ids值，添加更新条件
         for (Long id : ids) {
             LambdaQueryWrapper<Dish> wrapper = new LambdaQueryWrapper<>();
+            //判断菜品id 和前端传进来的ID是否一样
             wrapper.eq(Dish::getId, id);
             dishService.update(dish, wrapper);
         }
 
         return R.success("状态更改成功");
     }
+
 }
