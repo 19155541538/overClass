@@ -13,7 +13,6 @@ import com.fzh.reggie.service.SetmealService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -126,28 +125,30 @@ public class SetmealController {
 
     /**
      * 删除套餐
+     *
      * @param ids
      * @return
      */
     @DeleteMapping
-    public R<String> delete(@RequestParam List<Long> ids ) {
-        log.info("ids,{}",ids);
+    public R<String> delete(@RequestParam List<Long> ids) {
+        log.info("ids,{}", ids);
         setmealService.removeWithDish(ids);
         return R.success("套餐数据删除成功");
     }
 
     /**
      * 根据条件查询套餐数据
+     *
      * @param setmeal
      * @return
      */
     @GetMapping("/list")
-    public R<List<Setmeal>> list (Setmeal setmeal){
+    public R<List<Setmeal>> list(Setmeal setmeal) {
         LambdaQueryWrapper<Setmeal> setmealLambdaQueryWrapper = new LambdaQueryWrapper<>();
 
         //查询条件  根据分类ID 比对一下 当前分类 是什么套餐 或者 什么菜品
-        setmealLambdaQueryWrapper.eq(setmeal.getCategoryId()!=null,Setmeal::getCategoryId,setmeal.getCategoryId())
-                .eq(setmeal.getStatus()!=null ,Setmeal::getStatus, setmeal.getStatus())
+        setmealLambdaQueryWrapper.eq(setmeal.getCategoryId() != null, Setmeal::getCategoryId, setmeal.getCategoryId())
+                .eq(setmeal.getStatus() != null, Setmeal::getStatus, setmeal.getStatus())
                 .orderByDesc(Setmeal::getUpdateTime);
 
         List<Setmeal> list = setmealService.list(setmealLambdaQueryWrapper);
@@ -156,12 +157,13 @@ public class SetmealController {
 
     /**
      * 修改状态
+     *
      * @param status
      * @param ids
      * @return
      */
     @PostMapping("/status/{status}")
-    public  R<String> updateStatus (@PathVariable int status ,Long[] ids){
+    public R<String> updateStatus(@PathVariable int status, Long[] ids) {
         Setmeal setmeal = new Setmeal();
         setmeal.setStatus(status);
 
@@ -169,7 +171,7 @@ public class SetmealController {
             LambdaQueryWrapper<Setmeal> setmealLambdaQueryWrapper = new LambdaQueryWrapper<>();
             setmealLambdaQueryWrapper.eq(Setmeal::getId, id);
             // 根据 setmealLambdaQueryWrapper 条件，更新记录
-            setmealService.update(setmeal,setmealLambdaQueryWrapper);
+            setmealService.update(setmeal, setmealLambdaQueryWrapper);
         }
 
         return R.success("状态修改成功");
@@ -178,37 +180,37 @@ public class SetmealController {
 
     /**
      * 根据id查询数据进行数据回显
+     *
      * @param id
      * @return
      */
     @GetMapping("/{id}")
-    public R<SetmealDto> getById(@PathVariable Long id){
-
+    public R<SetmealDto> getById(@PathVariable Long id) {
         //先查询出套餐基本信息
         Setmeal setmeal = setmealService.getById(id);
 
         //再根据id查询出套餐对应的菜品信息
-        LambdaQueryWrapper<SetmealDish> wrapper=new LambdaQueryWrapper<>();
-        wrapper.eq(SetmealDish::getSetmealId,id);
+        LambdaQueryWrapper<SetmealDish> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SetmealDish::getSetmealId, id);
         List<SetmealDish> dishList = setmealDishService.list(wrapper);
 
         //创建SetmealDto对象，封装套餐和对饮的菜品信息
-        SetmealDto setmealDto=new SetmealDto();
-        BeanUtils.copyProperties(setmeal,setmealDto);
+        SetmealDto setmealDto = new SetmealDto();
+        BeanUtils.copyProperties(setmeal, setmealDto);
         setmealDto.setSetmealDishes(dishList);
         return R.success(setmealDto);
     }
 
-
     /**
      * 修改套餐信息
+     *
      * @param setmealDto
      * @return
      */
     @PutMapping
 //    @CacheEvict(value = "setmealCache" ,allEntries = true)
 //    @ApiOperation(value = "更新套餐信息")
-    public R<String> update(@RequestBody SetmealDto setmealDto){
+    public R<String> update(@RequestBody SetmealDto setmealDto) {
 
         setmealService.updateWithDish(setmealDto);
 
