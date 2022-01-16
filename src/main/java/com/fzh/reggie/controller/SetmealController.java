@@ -161,7 +161,7 @@ public class SetmealController {
      * @return
      */
     @PostMapping("/status/{status}")
-    public  R<String> updateStatus (@PathVariable int status , Long[] ids){
+    public  R<String> updateStatus (@PathVariable int status ,Long[] ids){
         Setmeal setmeal = new Setmeal();
         setmeal.setStatus(status);
 

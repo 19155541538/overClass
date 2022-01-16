@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fzh.reggie.common.R;
 import com.fzh.reggie.entity.Orders;
-import com.fzh.reggie.entity.ShoppingCart;
 import com.fzh.reggie.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +30,7 @@ public class OrderController {
      * @return
      */
     @PostMapping("/submit")
+
     public R<String> submit(@RequestBody Orders orders) {
         log.info("订单数据{}", orders);
         orderService.submit(orders);
@@ -75,7 +75,6 @@ public class OrderController {
         orderService.updateById(orders);
         return R.success("修改成功");
     }
-
 
     /**
      * 最新订单

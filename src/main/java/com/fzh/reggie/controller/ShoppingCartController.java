@@ -89,49 +89,8 @@ public class ShoppingCartController {
      */
     @PostMapping("/sub")
     public R<ShoppingCart> cut(@RequestBody ShoppingCart shoppingCart) {
-        //获取用户id
-        Long userId = BaseContext.getCurrentId();
-        //获取前端给的套餐id
-        Long setmealId = shoppingCart.getSetmealId();
-
-        LambdaQueryWrapper<ShoppingCart> shoppingCartLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        shoppingCartLambdaQueryWrapper.eq(ShoppingCart::getUserId, userId);//判断登录用户 id
-
-        if (setmealId == null) {
-            //删除菜品
-            shoppingCartLambdaQueryWrapper.eq(ShoppingCart::getDishId, shoppingCart.getDishId());
-        } else {
-            //删除taoc
-            shoppingCartLambdaQueryWrapper.eq(ShoppingCart::getSetmealId, shoppingCart.getSetmealId());
-        }
-        //查询当前菜品或者套餐是否在购物车中
-        ShoppingCart cartServiceOne = shoppingCartService.getOne(shoppingCartLambdaQueryWrapper);
-        Integer number = cartServiceOne.getNumber(); //获取数量
-
-        /*if(number != null){
-            //如果已经存在就在原来的基础上  减去一
-            Integer number1 = cartServiceOne.getNumber();
-            if(number>1){
-                cartServiceOne.setNumber(number - 1);
-            }else {
-                shoppingCartService.remove(shoppingCartLambdaQueryWrapper);
-            }
-            shoppingCartService.updateById(cartServiceOne);
-        }else {
-            shoppingCartService.updateById(cartServiceOne);
-        }
-        */
-
-        if (number >= 2) {
-            cartServiceOne.setNumber(number - 1);
-            shoppingCartService.updateById(cartServiceOne);
-        } else {
-            Integer number1 = cartServiceOne.getNumber();
-            cartServiceOne.setNumber(number - 1);
-            shoppingCartService.remove(shoppingCartLambdaQueryWrapper);
-        }
-        return R.success(shoppingCart);
-
+        shoppingCartService.cutWithShoppingCart(shoppingCart);
+        return  R.success(shoppingCart);
     }
 
     /*

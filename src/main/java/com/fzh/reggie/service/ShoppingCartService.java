@@ -1,6 +1,7 @@
 package com.fzh.reggie.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.fzh.reggie.common.R;
 import com.fzh.reggie.entity.ShoppingCart;
 
 /**
@@ -10,4 +11,5 @@ import com.fzh.reggie.entity.ShoppingCart;
  * @description 购物车 业务层
  */
 public interface ShoppingCartService extends IService<ShoppingCart> {
+    public R<ShoppingCart> cutWithShoppingCart (ShoppingCart shoppingCart);
 }
