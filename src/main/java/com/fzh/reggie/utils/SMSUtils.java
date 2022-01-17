@@ -11,8 +11,6 @@ import com.aliyuncs.profile.DefaultProfile;
  * 短信发送工具类
  */
 
-
- //试一下试一下.....................
 public class SMSUtils {
 
 	/**
