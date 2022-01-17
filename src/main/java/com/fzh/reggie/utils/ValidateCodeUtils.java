@@ -1,10 +1,13 @@
 package com.fzh.reggie.utils;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Random;
 
 /**
  * 随机生成验证码工具类
  */
+@Slf4j
 public class ValidateCodeUtils {
     /**
      * 随机生成验证码
@@ -16,6 +19,7 @@ public class ValidateCodeUtils {
         if(length == 4){
             code = new Random().nextInt(9999);//生成随机数，最大为9999
             if(code < 1000){
+                log.info("{}",code);
                 code = code + 1000;//保证随机数为4位数字
             }
         }else if(length == 6){
