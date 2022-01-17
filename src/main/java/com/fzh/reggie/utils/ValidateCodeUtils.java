@@ -19,6 +19,7 @@ public class ValidateCodeUtils {
         if(length == 4){
             code = new Random().nextInt(9999);//生成随机数，最大为9999
             if(code < 1000){
+                log.info("{}",length);
                 log.info("{}",code);
                 code = code + 1000;//保证随机数为4位数字
             }
