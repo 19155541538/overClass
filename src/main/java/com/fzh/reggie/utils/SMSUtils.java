@@ -12,7 +12,6 @@ import com.aliyuncs.profile.DefaultProfile;
  */
 
 
- //试一下试一下.....................
 public class SMSUtils {
 
 	/**
